@@ -1,0 +1,9 @@
+[user]
+email     = ""
+password  = ""
+authToken = ""
+
+developerToken   = ""
+applicationToken = ""
+userAgent        = ""
+clientId         = ""
