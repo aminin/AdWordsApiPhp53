@@ -1,23 +1,25 @@
 <?php
 
-namespace AdWords\cm\v201109;
+namespace AdWords\mcm\v201109;
 
 
 
-class RequestErrorReason
+class LinkType
 {
     /**
-     * Error reason is unknown.
+     * The manager has been granted permission to control the managed account.
      */
-    const CHOICE_UNKNOWN = 'UNKNOWN';
+    const CHOICE_ESTABLISHED = 'ESTABLISHED';
     /**
-     * Invalid input.
+     * Represents an invitation to link that one of the accounts hasn&#039;t yet accepted.
      */
-    const CHOICE_INVALID_INPUT = 'INVALID_INPUT';
+    const CHOICE_INVITATION = 'INVITATION';
+    const CHOICE_UNKNOWN = 'UNKNOWN';
 
     private $_validValues = array(
+        'ESTABLISHED',
+        'INVITATION',
         'UNKNOWN',
-        'INVALID_INPUT',
     );
 
     private $_value;

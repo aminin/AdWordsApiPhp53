@@ -7,6 +7,7 @@ namespace AdWords\cm\v201109;
 class ApplicationException 
 {
     /**
+     * Error message.
      * @var string
      */
     public $message;

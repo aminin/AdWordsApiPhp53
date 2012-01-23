@@ -7,14 +7,17 @@ namespace AdWords\cm\v201109;
 abstract class ApiError 
 {
     /**
+     * The OGNL field path to identify cause of error.
      * @var string
      */
     public $fieldPath;
     /**
+     * The data that caused the error.
      * @var string
      */
     public $trigger;
     /**
+     * A simple string representation of the error and reason.
      * @var string
      */
     public $errorString;

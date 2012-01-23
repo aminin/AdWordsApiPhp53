@@ -1,17 +1,21 @@
 <?php
 
-namespace AdWords\cm\v201109;
-
-use AdWords\cm\v201109\ApiError;
+namespace AdWords\mcm\v201109;
 
 
-class NotWhitelistedError extends ApiError
+
+class ServicedAccountGraph 
 {
     /**
-     * The error reason represented by an enum.
-     * @var \AdWords\cm\v201109\NotWhitelistedErrorReason
+     * The accounts found that match the selector query
+     * @var \AdWords\mcm\v201109\Account[]
      */
-    public $reason;
+    public $accounts;
+    /**
+     * The manager links between the listed accounts
+     * @var \AdWords\mcm\v201109\Link[]
+     */
+    public $links;
     private $_propertyMap = array (
     );
 

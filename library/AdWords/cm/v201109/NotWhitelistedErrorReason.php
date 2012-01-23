@@ -6,6 +6,9 @@ namespace AdWords\cm\v201109;
 
 class NotWhitelistedErrorReason
 {
+    /**
+     * Customer is not whitelisted for accessing the API.
+     */
     const CHOICE_CUSTOMER_NOT_WHITELISTED_FOR_API = 'CUSTOMER_NOT_WHITELISTED_FOR_API';
 
     private $_validValues = array(

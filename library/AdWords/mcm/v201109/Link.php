@@ -1,18 +1,40 @@
 <?php
 
-namespace AdWords\cm\v201109;
-
-use AdWords\cm\v201109\ApiError;
+namespace AdWords\mcm\v201109;
 
 
-class NotWhitelistedError extends ApiError
+
+class Link 
 {
     /**
-     * The error reason represented by an enum.
-     * @var \AdWords\cm\v201109\NotWhitelistedErrorReason
+     * The ID of the manager represented in ths link.
+     * @var \AdWords\mcm\v201109\CustomerId
      */
-    public $reason;
+    public $managerId;
+    /**
+     * The ID of the client represented in this link.
+     * @var \AdWords\mcm\v201109\CustomerId
+     */
+    public $clientId;
+    /**
+     * Whether the link has been established.
+     * @var \AdWords\mcm\v201109\LinkType
+     */
+    public $typeOfLink;
+    /**
+     * The descriptive name used by the manager to refer to the client.
+     * @var string
+     */
+    public $descriptiveName;
+    /**
+     * Indicates that this instance is a subtype of Link.
+     *                 Although this field is returned in the response, it is ignored on input
+     *                 and cannot be selected. Specify xsi:type instead.
+     * @var string
+     */
+    public $LinkType;
     private $_propertyMap = array (
+        "Link.Type" => "LinkType",
     );
 
     /**

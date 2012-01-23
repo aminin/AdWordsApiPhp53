@@ -6,6 +6,9 @@ namespace AdWords\cm\v201109;
 
 class RateExceededErrorReason
 {
+    /**
+     * Rate exceeded.
+     */
     const CHOICE_RATE_EXCEEDED = 'RATE_EXCEEDED';
 
     private $_validValues = array(

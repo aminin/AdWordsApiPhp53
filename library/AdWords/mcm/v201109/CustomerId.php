@@ -1,17 +1,15 @@
 <?php
 
-namespace AdWords\cm\v201109;
-
-use AdWords\cm\v201109\ApiError;
+namespace AdWords\mcm\v201109;
 
 
-class NotWhitelistedError extends ApiError
+
+class CustomerId 
 {
     /**
-     * The error reason represented by an enum.
-     * @var \AdWords\cm\v201109\NotWhitelistedErrorReason
+     * @var string
      */
-    public $reason;
+    public $id;
     private $_propertyMap = array (
     );
 

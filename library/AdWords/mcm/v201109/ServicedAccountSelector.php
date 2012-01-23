@@ -1,17 +1,27 @@
 <?php
 
-namespace AdWords\cm\v201109;
-
-use AdWords\cm\v201109\ApiError;
+namespace AdWords\mcm\v201109;
 
 
-class NotWhitelistedError extends ApiError
+
+class ServicedAccountSelector 
 {
     /**
-     * The error reason represented by an enum.
-     * @var \AdWords\cm\v201109\NotWhitelistedErrorReason
+     * If nonempty, only customers (recursively) managed by these &quot;seeds&quot; will be returned.
+     * @var string
      */
-    public $reason;
+    public $customerIds;
+    /**
+     * Whether to treat the results as a flat list instead of a graph of links.
+     *                 If false, paging options will be ignored.
+     * @var string
+     */
+    public $enablePaging;
+    /**
+     * Whether the result should only return accounts that themselves can manage clients.
+     * @var string
+     */
+    public $submanagersOnly;
     private $_propertyMap = array (
     );
 

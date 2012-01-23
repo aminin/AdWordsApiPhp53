@@ -14,7 +14,10 @@ class CreateAccountService extends SoapClient
 	protected static $classmap = array(
         "mutate"                     => "\\AdWords\\mcm\\v201109\\CreateAccountServiceMutate",
         "mutateResponse"             => "\\AdWords\\mcm\\v201109\\CreateAccountServiceMutateResponse",
-
+        "Account"                    => "\\AdWords\\mcm\\v201109\\Account",
+        "CreateAccountError"         => "\\AdWords\\mcm\\v201109\\CreateAccountError",
+        "CreateAccountError.Reason"  => "\\AdWords\\mcm\\v201109\\CreateAccountErrorReason",
+        "CreateAccountOperation"     => "\\AdWords\\mcm\\v201109\\CreateAccountOperation",
         "SoapHeader"                 => "\\AdWords\\cm\\v201109\\SoapHeader",
         "SoapResponseHeader"         => "\\AdWords\\cm\\v201109\\SoapResponseHeader",
         "AuthenticationError"        => "\\AdWords\\cm\\v201109\\AuthenticationError",
@@ -47,30 +50,19 @@ class CreateAccountService extends SoapClient
         "RequestError.Reason"        => "\\AdWords\\cm\\v201109\\RequestErrorReason",
         "RequiredError.Reason"       => "\\AdWords\\cm\\v201109\\RequiredErrorReason",
         "SizeLimitError.Reason"      => "\\AdWords\\cm\\v201109\\SizeLimitErrorReason",
-        "StringLengthError.Reason"   => "\\AdWords\\cm\\v201109\\StringLengthErrorReason",
-
-        "Account"                    => "\\AdWords\\mcm\\v201109\\Account",
-        "CreateAccountError"         => "\\AdWords\\cm\\v201109\\CreateAccountError",
-        "CreateAccountError.Reason"  => "\\AdWords\\cm\\v201109\\CreateAccountErrorReason",
-        "CreateAccountOperation"     => "\\AdWords\\cm\\v201109\\CreateAccountOperation",
+        "StringLengthError.Reason"   => "\\AdWords\\cm\\v201109\\StringLengthErrorReason"
 	);
 
-	/**
-	 * The endpoint of the service
+    /**
+     * Constructor using wsdl location and options array
      *
-	 * @var string
-	 */
-	public static $endpoint = "https://adwords.google.com/api/adwords/mcm/v201109/CreateAccountService";
-
-	/**
-	 * Constructor using wsdl location and options array
-     *
-	 * @param string $wsdl WSDL location for this service
-	 * @param array $options Options for the SoapClient
-	 */
-	public function __construct($wsdl=null, $options, $user)
+     * @param string        $wsdl    WSDL location for this service
+     * @param array         $options Options for the SoapClient
+     * @param \AdWords\User $user
+     */
+	public function __construct($wsdl, $options, \AdWords\User $user)
     {
-		$options["classmap"] = CreateAccountService::$classmap;
+		$options["classmap"] = static::$classmap;
 		parent::__construct($wsdl, $options, $user, 'CreateAccountService', 'https://adwords.google.com/api/adwords/mcm/v201109');
 	}
 

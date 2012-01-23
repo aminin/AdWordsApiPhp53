@@ -6,6 +6,9 @@ namespace AdWords\cm\v201109;
 
 class RequiredErrorReason
 {
+    /**
+     * Missing required field.
+     */
     const CHOICE_REQUIRED = 'REQUIRED';
 
     private $_validValues = array(

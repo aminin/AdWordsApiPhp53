@@ -23,7 +23,7 @@
  * limitations under the License.
  *
  * @package    AdWords
- * @subpackage v201109
+ * @subpackage example
  * @category   WebServices
  * @copyright  {copyright}
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

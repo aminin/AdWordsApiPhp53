@@ -1,22 +1,29 @@
 <?php
 
-namespace AdWords\cm\v201109;
+namespace AdWords\mcm\v201109;
 
 
 
-class InternalApiErrorReason
+class ServicedAccountErrorReason
 {
     /**
-     * API encountered an unexpected internal error.
+     * Improper IDs were specified in the request
      */
-    const CHOICE_UNEXPECTED_INTERNAL_API_ERROR = 'UNEXPECTED_INTERNAL_API_ERROR';
+    const CHOICE_BAD_IDS = 'BAD_IDS';
     /**
-     * The cause of the error is not known or only defined in newer versions.
+     * The user is not allowed to query one or more of the specified accounts
      */
+    const CHOICE_NOT_AUTHORIZED = 'NOT_AUTHORIZED';
+    /**
+     * The customer has reached quota limit.
+     */
+    const CHOICE_REQUESTS_TOO_FREQUENT = 'REQUESTS_TOO_FREQUENT';
     const CHOICE_UNKNOWN = 'UNKNOWN';
 
     private $_validValues = array(
-        'UNEXPECTED_INTERNAL_API_ERROR',
+        'BAD_IDS',
+        'NOT_AUTHORIZED',
+        'REQUESTS_TOO_FREQUENT',
         'UNKNOWN',
     );
 

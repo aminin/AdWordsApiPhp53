@@ -6,6 +6,9 @@ namespace AdWords\cm\v201109;
 
 class ClientTermsErrorReason
 {
+    /**
+     * Customer has not agreed to the latest AdWords Terms &amp; Conditions
+     */
     const CHOICE_INCOMPLETE_SIGNUP_CURRENT_ADWORDS_TNC_NOT_AGREED = 'INCOMPLETE_SIGNUP_CURRENT_ADWORDS_TNC_NOT_AGREED';
 
     private $_validValues = array(
