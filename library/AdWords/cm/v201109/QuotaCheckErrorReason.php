@@ -1,0 +1,53 @@
+<?php
+
+namespace AdWords\cm\v201109;
+
+
+
+class QuotaCheckErrorReason
+{
+    const CHOICE_INVALID_TOKEN_HEADER = 'INVALID_TOKEN_HEADER';
+    const CHOICE_ACCOUNT_DELINQUENT = 'ACCOUNT_DELINQUENT';
+    const CHOICE_ACCOUNT_INACCESSIBLE = 'ACCOUNT_INACCESSIBLE';
+    const CHOICE_ACCOUNT_INACTIVE = 'ACCOUNT_INACTIVE';
+    const CHOICE_INCOMPLETE_SIGNUP = 'INCOMPLETE_SIGNUP';
+    const CHOICE_INCOMPLETE_SIGNUP_LATEST_ADWORDS_API_TNC_NOT_AGREED = 'INCOMPLETE_SIGNUP_LATEST_ADWORDS_API_TNC_NOT_AGREED';
+    const CHOICE_INCOMPLETE_SIGNUP_NO_BILLING_INFO = 'INCOMPLETE_SIGNUP_NO_BILLING_INFO';
+    const CHOICE_INCOMPLETE_SIGNUP_USER_INFO_MISSING = 'INCOMPLETE_SIGNUP_USER_INFO_MISSING';
+    const CHOICE_INCOMPLETE_SIGNUP_USER_INFO_PENDING = 'INCOMPLETE_SIGNUP_USER_INFO_PENDING';
+    const CHOICE_INCOMPLETE_SIGNUP_USER_INFO_REJECTED = 'INCOMPLETE_SIGNUP_USER_INFO_REJECTED';
+    const CHOICE_MONTHLY_BUDGET_REACHED = 'MONTHLY_BUDGET_REACHED';
+    const CHOICE_QUOTA_EXCEEDED = 'QUOTA_EXCEEDED';
+
+    private $_validValues = array(
+        'INVALID_TOKEN_HEADER',
+        'ACCOUNT_DELINQUENT',
+        'ACCOUNT_INACCESSIBLE',
+        'ACCOUNT_INACTIVE',
+        'INCOMPLETE_SIGNUP',
+        'INCOMPLETE_SIGNUP_LATEST_ADWORDS_API_TNC_NOT_AGREED',
+        'INCOMPLETE_SIGNUP_NO_BILLING_INFO',
+        'INCOMPLETE_SIGNUP_USER_INFO_MISSING',
+        'INCOMPLETE_SIGNUP_USER_INFO_PENDING',
+        'INCOMPLETE_SIGNUP_USER_INFO_REJECTED',
+        'MONTHLY_BUDGET_REACHED',
+        'QUOTA_EXCEEDED',
+    );
+
+    private $_value;
+
+    public function __construct($value)
+    {
+        if (!in_array($value, $this->_validValues))
+            throw new \InvalidArgumentException(
+                sprintf('Invalid enum value %s', $value)
+            );
+
+        $this->_value = $value;
+    }
+
+    public function __toString()
+    {
+        return $this->_value;
+    }
+}
