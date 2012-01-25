@@ -1,8 +1,8 @@
 <?php
 /**
- * This example adds a campaign.
+ * This example deletes an ad. To get text ads, run GetTextAds.php.
  *
- * Tags: CampaignService.mutate
+ * Tags: AdGroupAdService.mutate
  *
  * Copyright {copyright}
  *
@@ -23,9 +23,10 @@
  * @category   WebServices
  * @copyright  {copyright}
  * @license    http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
- * @author     Adam Rogal <api.arogal@gmail.com>
  * @author     Eric Koleda <eric.koleda@google.com>
  */
+
+error_reporting(E_STRICT | E_ALL);
 
 // Don't run the example if the file is being included.
 if (__FILE__ != realpath($_SERVER['PHP_SELF'])) {
@@ -36,54 +37,60 @@ if (__FILE__ != realpath($_SERVER['PHP_SELF'])) {
 require_once __DIR__ . '/../../../library/AdWords/Autoloader.php';
 \AdWords\Autoloader::register();
 
+$adGroupId = null; // insert ad group id here
+$adId      = null; // insert ad id here
+
+if (!$adGroupId) {
+    if (!isset($argv[1]) || !is_numeric($argv[1])) { // or pass ad group id as the first argument
+        die("No ad group id given\n");
+    }
+    $adGroupId = $argv[1];
+}
+
+if (!$adId) {
+    if (!isset($argv[2]) || !is_numeric($argv[2])) { // or pass ad id as the first argument
+        die("No ad id given\n");
+    }
+    $adId = $argv[2];
+}
+
 /**
  * Runs the example.
  *
- * @param \AdWords\User $user the user to run the example with
+ * @param \AdWords\User $user      the user to run the example with
+ * @param string        $adGroupId the id of the ad group the ad is in
+ * @param string        $adId      the id of the ad
  */
-function addCampaignExample(\AdWords\User $user)
+function deleteAdExample(\AdWords\User $user, $adGroupId, $adId)
 {
     $soapClientFactory = new \AdWords\SoapClientFactory($user, null, false);
     // Sandbox server
     $soapClientFactory->setServer('https://adwords-sandbox.google.com');
-    // Get the service, which loads the required classes.
-    /** @var \AdWords\cm\v201109\CampaignService $campaignService */
-    $campaignService = $soapClientFactory->generateSoapClient('Campaign');
+    /** @var \AdWords\cm\v201109\AdGroupService $adGroupAdService */
+    $adGroupAdService = $soapClientFactory->generateSoapClient('AdGroupAd');
 
-    // Create campaign.
-    $campaign                  = new \AdWords\cm\v201109\Campaign;
-    $campaign->name            = 'Interplanetary Cruise #' . uniqid();
-    $campaign->status          = 'PAUSED';
-    $campaign->biddingStrategy = new \AdWords\cm\v201109\ManualCPC;
+    // Create base class ad to avoid setting type specific fields.
+    $ad     = new \AdWords\cm\v201109\Ad();
+    $ad->id = $adId;
 
-    $budget                      = new \AdWords\cm\v201109\Budget;
-    $budget->period              = 'DAILY';
-    $budget->amount              = new \AdWords\cm\v201109\Money;
-    $budget->amount->microAmount = 5e7;
-    $budget->deliveryMethod      = 'STANDARD';
-    $campaign->budget            = $budget;
-
-    // Set the campaign network options to Google Search and Search Network.
-    $networkSetting                             = new \AdWords\cm\v201109\NetworkSetting;
-    $networkSetting->targetGoogleSearch         = true;
-    $networkSetting->targetSearchNetwork        = true;
-    $networkSetting->targetContentNetwork       = false;
-    $networkSetting->targetContentContextual    = false;
-    $networkSetting->targetPartnerSearchNetwork = false;
-    $campaign->networkSetting                   = $networkSetting;
+    // Create ad group ad.
+    $adGroupAd            = new \AdWords\cm\v201109\AdGroupAd;
+    $adGroupAd->adGroupId = $adGroupId;
+    $adGroupAd->ad        = $ad;
 
     // Create operation.
-    $operation           = new \AdWords\cm\v201109\CampaignOperation;
-    $operation->operand  = $campaign;
-    $operation->operator = 'ADD';
+    $operation           = new \AdWords\cm\v201109\AdGroupAdOperation;
+    $operation->operand  = $adGroupAd;
+    $operation->operator = 'REMOVE';
 
     $operations = array($operation);
 
     // Make the mutate request.
-    $result = $campaignService->mutate($operations);
+    $result = $adGroupAdService->mutate($operations);
+
     // Display result.
-    $campaign = $result->value[0];
-    printf("Campaign with name '%s' and id '%s' was added.\n", $campaign->name, $campaign->id);
+    $adGroupAd = $result->value[0];
+    printf("Ad with id '%s' was deleted.\n", $adGroupAd->ad->id);
 }
 
 try {
@@ -104,10 +111,8 @@ try {
 
     printf("AuthToken: %s\n", $user->getAuthToken());
     printf("ClientId: %s\n", $user->getClientId());
-
     // Run the example.
-    addCampaignExample($user);
+    deleteAdExample($user, $adGroupId, $adId);
 } catch (Exception $e) {
     printf("An error has occurred: %s\n", $e->getMessage());
-    //print_r($e);
 }

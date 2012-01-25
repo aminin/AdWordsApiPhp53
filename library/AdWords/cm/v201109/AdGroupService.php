@@ -126,7 +126,7 @@ class AdGroupService extends SoapClient
      */
     public function __construct($wsdl = null, $options, \AdWords\User $user)
     {
-        $options["classmap"] = AdGroupService::$classmap;
+        $options["classmap"] = self::$classmap;
         parent::__construct($wsdl, $options, $user, 'AdGroupService', 'https://adwords.google.com/api/adwords/cm/v201109');
     }
 

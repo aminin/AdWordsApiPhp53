@@ -41,7 +41,7 @@ $adGroupId = null; // insert ad group id here
 
 if (!$adGroupId) {
     if (!isset($argv[1]) || !is_numeric($argv[1])) { // or pass ad group id as the first argument
-        die("No campaign id given\n");
+        die("No ad group id given\n");
     }
     $adGroupId = $argv[1];
 }

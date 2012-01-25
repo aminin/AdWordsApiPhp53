@@ -1,9 +1,9 @@
 <?php
 /**
- * This example updates the default bid of an ad group. To get ad groups, run
- * GetAdGroups.php.
+ * This example adds text ads to an ad group. To get ad groups,
+ * run GetAdGroups.php.
  *
- * Tags: AdGroupService.mutate
+ * Tags: AdGroupAdService.mutate
  *
  * Copyright {copyright}
  *
@@ -47,49 +47,64 @@ if (!$adGroupId) {
     $adGroupId = $argv[1];
 }
 
+define('NUM_ADS', 2);
+
 /**
  * Runs the example.
  *
  * @param \AdWords\User $user      the user to run the example with
- * @param string        $adGroupId the id of the ad group to update
+ * @param string        $adGroupId the id of the ad group to add the ads to
  */
-function UpdateAdGroupExample(\AdWords\User $user, $adGroupId)
+function addTextAdsExample(\AdWords\User $user, $adGroupId)
 {
     $soapClientFactory = new \AdWords\SoapClientFactory($user, null, false);
     // Sandbox server
     $soapClientFactory->setServer('https://adwords-sandbox.google.com');
-    // Get the service, which loads the required classes.
-    /** @var \AdWords\cm\v201109\AdGroupService $adGroupService */
-    $adGroupService = $soapClientFactory->generateSoapClient('AdGroup');
+    /** @var \AdWords\cm\v201109\AdGroupService $adGroupAdService */
+    $adGroupAdService = $soapClientFactory->generateSoapClient('AdGroupAd');
 
-    // Create ad group using an existing ID.
-    $adGroup     = new \AdWords\cm\v201109\AdGroup();
-    $adGroup->id = $adGroupId;
+    // Create text ads.
+    $ads = array();
+    for ($i = 0; $i < NUM_ADS; $i++) {
+        $textAd               = new \AdWords\cm\v201109\TextAd;
+        $textAd->headline     = 'Cruise #' . uniqid();
+        $textAd->description1 = 'Visit the Red Planet in style.';
+        $textAd->description2 = 'Low-gravity fun for everyone!';
+        $textAd->displayUrl   = 'www.example.com';
+        $textAd->url          = 'http://www.example.com';
+        $ads[]                = $textAd;
+    }
 
-    // Update the bid.
-    $adGroup->bids = new \AdWords\cm\v201109\ManualCPCAdGroupBids;
-    $adGroup->bids->keywordMaxCpc = new \AdWords\cm\v201109\Bid;
-    $adGroup->bids->keywordMaxCpc->amount = new \AdWords\cm\v201109\Money;
-    $adGroup->bids->keywordMaxCpc->amount->microAmount = 0.75 * 1e6;
+    // Create ad group ads and operations.
+    $operations = array();
+    foreach ($ads as $ad) {
+        $adGroupAd            = new \AdWords\cm\v201109\AdGroupAd;
+        $adGroupAd->adGroupId = $adGroupId;
+        $adGroupAd->ad        = $ad;
 
-    // Create operation.
-    $operation           = new \AdWords\cm\v201109\AdGroupOperation;
-    $operation->operand  = $adGroup;
-    $operation->operator = 'SET';
-
-    $operations = array($operation);
+        // Create operation.
+        $operation           = new \AdWords\cm\v201109\AdGroupAdOperation;
+        $operation->operand  = $adGroupAd;
+        $operation->operator = 'ADD';
+        $operations[]        = $operation;
+    }
 
     // Make the mutate request.
-    $result = $adGroupService->mutate($operations);
+    $result = $adGroupAdService->mutate($operations);
 
-    // Display result.
-    $adGroup = $result->value[0];
-    printf(
-        "Ad group with id '%s' has updated default bid '$%s'.\n",
-        $adGroup->id,
-        $adGroup->bids->keywordMaxCpc->amount->microAmount / 1e6
-    );
+    // Display results.
+    foreach ($result->value as $adGroupAd) {
+        printf(
+            "Text ad with headline '%s' and id '%s' was added.\n",
+            $adGroupAd->ad->headline,
+            $adGroupAd->ad->id
+        );
+    }
+}
 
+// Don't run the example if the file is being included.
+if (__FILE__ != realpath($_SERVER['PHP_SELF'])) {
+    return;
 }
 
 try {
@@ -112,7 +127,7 @@ try {
     printf("ClientId: %s\n", $user->getClientId());
 
     // Run the example.
-    updateAdGroupExample($user, $adGroupId);
+    addTextAdsExample($user, $adGroupId);
 } catch (Exception $e) {
     printf("An error has occurred: %s\n", $e->getMessage());
 }
