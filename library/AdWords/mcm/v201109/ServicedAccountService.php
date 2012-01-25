@@ -22,7 +22,6 @@ class ServicedAccountService extends SoapClient
         "ServicedAccountGraph"        => "AdWords\\mcm\\v201109\\ServicedAccountGraph",
         "LinkType"                    => "AdWords\\mcm\\v201109\\LinkType",
         "ServicedAccountError.Reason" => "AdWords\\mcm\\v201109\\ServicedAccountErrorReason",
-        "DateTime"                    => "AdWords\\cm\\v201109\\AdWordsDateTime",
         "SoapHeader"                  => "AdWords\\cm\\v201109\\SoapHeader",
         "AuthenticationError"         => "AdWords\\cm\\v201109\\AuthenticationError",
         "ApiError"                    => "AdWords\\cm\\v201109\\ApiError",

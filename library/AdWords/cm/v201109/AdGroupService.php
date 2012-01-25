@@ -16,7 +16,6 @@ class AdGroupService extends SoapClient
         "get"                                      => "AdWords\\cm\\v201109\\AdGroupServiceGet",
         "mutate"                                   => "AdWords\\cm\\v201109\\AdGroupServiceMutate",
         "mutateResponse"                           => "AdWords\\cm\\v201109\\AdGroupServiceMutateResponse",
-        "DateTime"                                 => "AdWords\\cm\\v201109\\AdWordsDateTime",
         "SoapHeader"                               => "AdWords\\cm\\v201109\\SoapHeader",
         "AdGroupServiceError"                      => "AdWords\\cm\\v201109\\AdGroupServiceError",
         "ApiError"                                 => "AdWords\\cm\\v201109\\ApiError",

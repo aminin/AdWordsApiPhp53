@@ -48,7 +48,7 @@ if (!$adGroupId) {
 }
 
 if (!$adId) {
-    if (!isset($argv[2]) || !is_numeric($argv[2])) { // or pass ad id as the first argument
+    if (!isset($argv[2]) || !is_numeric($argv[2])) { // or pass ad id as the second argument
         die("No ad id given\n");
     }
     $adId = $argv[2];

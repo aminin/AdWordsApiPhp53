@@ -16,7 +16,6 @@ class CampaignService extends SoapClient
         "get"                                            => "AdWords\\cm\\v201109\\CampaignServiceGet",
         "mutate"                                         => "AdWords\\cm\\v201109\\CampaignServiceMutate",
         "mutateResponse"                                 => "AdWords\\cm\\v201109\\CampaignServiceMutateResponse",
-        "DateTime"                                       => "AdWords\\cm\\v201109\\AdWordsDateTime",
         "SoapHeader"                                     => "AdWords\\cm\\v201109\\SoapHeader",
         "AuthenticationError"                            => "AdWords\\cm\\v201109\\AuthenticationError",
         "ApiError"                                       => "AdWords\\cm\\v201109\\ApiError",

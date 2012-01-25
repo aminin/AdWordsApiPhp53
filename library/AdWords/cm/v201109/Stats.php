@@ -172,37 +172,65 @@ class Stats
      * @var string
      */
     public $StatsType;
-    private $_propertyMap = array (
+    private $_propertyMap = array(
         "Stats.Type" => "StatsType",
     );
 
+    public function __construct($startDate = null, $endDate = null, $network = null, $clicks = null, $impressions = null, $cost = null, $averagePosition = null, $averageCpc = null, $averageCpm = null, $ctr = null, $conversions = null, $conversionRate = null, $costPerConversion = null, $conversionsManyPerClick = null, $conversionRateManyPerClick = null, $costPerConversionManyPerClick = null, $viewThroughConversions = null, $totalConvValue = null, $valuePerConv = null, $valuePerConvManyPerClick = null, $invalidClicks = null, $invalidClickRate = null, $numCalls = null, $numMissedCalls = null, $numReceivedCalls = null, $callDurationSecs = null, $avgCallDurationSecs = null, $StatsType = null)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->network = $network;
+        $this->clicks = $clicks;
+        $this->impressions = $impressions;
+        $this->cost = $cost;
+        $this->averagePosition = $averagePosition;
+        $this->averageCpc = $averageCpc;
+        $this->averageCpm = $averageCpm;
+        $this->ctr = $ctr;
+        $this->conversions = $conversions;
+        $this->conversionRate = $conversionRate;
+        $this->costPerConversion = $costPerConversion;
+        $this->conversionsManyPerClick = $conversionsManyPerClick;
+        $this->conversionRateManyPerClick = $conversionRateManyPerClick;
+        $this->costPerConversionManyPerClick = $costPerConversionManyPerClick;
+        $this->viewThroughConversions = $viewThroughConversions;
+        $this->totalConvValue = $totalConvValue;
+        $this->valuePerConv = $valuePerConv;
+        $this->valuePerConvManyPerClick = $valuePerConvManyPerClick;
+        $this->invalidClicks = $invalidClicks;
+        $this->invalidClickRate = $invalidClickRate;
+        $this->numCalls = $numCalls;
+        $this->numMissedCalls = $numMissedCalls;
+        $this->numReceivedCalls = $numReceivedCalls;
+        $this->callDurationSecs = $callDurationSecs;
+        $this->avgCallDurationSecs = $avgCallDurationSecs;
+        $this->StatsType = $StatsType;
+    }
+
     /**
-     * Set property with php-incompatiable name
+     * Set property with php-incompatible name
      *
-     * @param $var attribute name to set
-     * @param $value Value to set
+     * @param string $var   attribute name to set
+     * @param mixed  $value Value to set
      */
     public function __set($var, $value)
     {
         if (isset($this->_propertyMap[$var])) {
             $this->{$this->_propertyMap[$var]} = $value;
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__set($var, $value);
         }
     }
 
     /**
-     * Get property with php-incompatiable name
+     * Get property with php-incompatible name
      *
-     * @param $var attribute name to get.
+     * @param string $var attribute name to get.
      * @return mixed Variable value
      */
     public function __get($var)
     {
         if (array_key_exists($var, $this->_propertyMap)) {
             return $this->{$this->_propertyMap[$var]};
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__get($var);
         } else {
             return null;
         }
