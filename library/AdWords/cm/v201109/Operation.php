@@ -7,14 +7,15 @@ namespace AdWords\cm\v201109;
 abstract class Operation 
 {
     /**
-     * &lt;span class=&quot;constraint Required&quot;&gt;This field is required and should not be {@code null}.&lt;/span&gt;
+     * Operator.
+     * This field is required and should not be {@code null}.
      * @var \AdWords\cm\v201109\Operator
      */
     public $operator;
     /**
      * Indicates that this instance is a subtype of Operation.
-     *                 Although this field is returned in the response, it is ignored on input
-     *                 and cannot be selected. Specify xsi:type instead.
+     * Although this field is returned in the response, it is ignored on input
+     * and cannot be selected. Specify xsi:type instead.
      * @var string
      */
     public $OperationType;

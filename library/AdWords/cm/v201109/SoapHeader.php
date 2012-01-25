@@ -8,28 +8,28 @@ class SoapHeader
 {
     /**
      * Authentication token from Google ClientLogin API. Developers need to authenticate themselves
-     *                 with that API before they can send a request to AdWords API. This header identifies either the
-     *                 MCC manager acting on behalf of their client, or the advertiser managing their own account.
+     * with that API before they can send a request to AdWords API. This header identifies either the
+     * MCC manager acting on behalf of their client, or the advertiser managing their own account.
      * @var string
      */
     public $authToken;
     /**
      * Optional header: the customer id of the client of the MCC manager. Applicable only
-     *                 if an MCC manager, as identified by authToken, is acting on behalf of their client.
+     * if an MCC manager, as identified by authToken, is acting on behalf of their client.
      * @var string
      */
     public $clientCustomerId;
     /**
      * Developer token to identify that the person making the call has enough
-     *                 quota.
+     * quota.
      * @var string
      */
     public $developerToken;
     /**
      * UserAgent is used to track distribution of API client programs and
-     *                 application usage. The client is responsible for putting in a meaningful
-     *                 value for tracking purposes. To be clear this is not the same as an HTTP
-     *                 user agent.
+     * application usage. The client is responsible for putting in a meaningful
+     * value for tracking purposes. To be clear this is not the same as an HTTP
+     * user agent.
      * @var string
      */
     public $userAgent;
@@ -40,9 +40,9 @@ class SoapHeader
     public $validateOnly;
     /**
      * If true, API will try to commit as many error free operations as possible and
-     *                 report the other operations&#039; errors.
-     *                 
-     *                 &lt;p&gt;Ignored for non-mutate calls.
+     * report the other operations&#039; errors.
+     * 
+     * Ignored for non-mutate calls.
      * @var string
      */
     public $partialFailure;

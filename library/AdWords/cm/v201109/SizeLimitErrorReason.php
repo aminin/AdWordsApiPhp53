@@ -15,7 +15,7 @@ class SizeLimitErrorReason
      */
     const CHOICE_RESPONSE_SIZE_LIMIT_EXCEEDED = 'RESPONSE_SIZE_LIMIT_EXCEEDED';
     /**
-     * &lt;span class=&quot;constraint Rejected&quot;&gt;Used for return value only. An enumeration could not be processed, typically due to incompatibility with your WSDL version.&lt;/span&gt;
+     * Used for return value only. An enumeration could not be processed, typically due to incompatibility with your WSDL version.
      */
     const CHOICE_UNKNOWN = 'UNKNOWN';
 

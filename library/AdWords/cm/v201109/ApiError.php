@@ -23,8 +23,8 @@ abstract class ApiError
     public $errorString;
     /**
      * Indicates that this instance is a subtype of ApiError.
-     *                 Although this field is returned in the response, it is ignored on input
-     *                 and cannot be selected. Specify xsi:type instead.
+     * Although this field is returned in the response, it is ignored on input
+     * and cannot be selected. Specify xsi:type instead.
      * @var string
      */
     public $ApiErrorType;

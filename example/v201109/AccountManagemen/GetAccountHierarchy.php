@@ -49,6 +49,8 @@ require_once __DIR__ . '/../../../library/AdWords/Autoloader.php';
 function getAccountHierarchyExample(\AdWords\User $user)
 {
     $soapClientFactory = new \AdWords\SoapClientFactory($user, null, false);
+    $soapClientFactory->setServer('https://adwords-sandbox.google.com');
+
     // Get the service, which loads the required classes.
     /** @var \AdWords\mcm\v201109\ServicedAccountService $servicedAccountService */
     $servicedAccountService = $soapClientFactory->generateSoapClient('ServicedAccount');
@@ -136,12 +138,11 @@ try {
        die("Ini file not found\n");
     }
 
-    // Get AdWordsUser from credentials in "../auth.ini"
-    // relative to the AdWordsUser.php file's directory.
     $user = new \AdWords\User();
     $user->setEmail($userSettings['email']);
     $user->setPassword($userSettings['password']);
     $user->setAuthToken($userSettings['authToken']);
+    $user->setDeveloperToken($userSettings['developerToken']);
     printf("AuthToken: %s\n", $user->getAuthToken());
 
     // Run the example.
