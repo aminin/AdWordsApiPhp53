@@ -121,12 +121,13 @@ class AdGroupService extends SoapClient
      *
      * @param string        $wsdl    WSDL location for this service
      * @param array         $options Options for the SoapClient
-     * @param \AdWords\User $user
      */
-    public function __construct($wsdl = null, $options, \AdWords\User $user)
+    public function __construct($wsdl, $options)
     {
-        $options["classmap"] = self::$classmap;
-        parent::__construct($wsdl, $options, $user, 'AdGroupService', 'https://adwords.google.com/api/adwords/cm/v201109');
+        $options["classmap"]         = self::$classmap;
+        $options["serviceName"]      = 'AdGroupService';
+        $options["serviceNamespace"] = 'https://adwords.google.com/api/adwords/cm/v201109';
+        parent::__construct($wsdl, $options);
     }
 
     /**

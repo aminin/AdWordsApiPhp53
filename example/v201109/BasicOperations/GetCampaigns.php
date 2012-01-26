@@ -53,6 +53,7 @@ function GetCampaignsExample(\AdWords\User $user)
     // Get the service, which loads the required classes.
     /** @var \AdWords\cm\v201109\CampaignService $campaignService */
     $campaignService = $soapClientFactory->generateSoapClient('Campaign');
+    // $campaignService->setRequestObserver('print_r');
 
     // Create selector.
     $selector             = new \AdWords\cm\v201109\Selector;

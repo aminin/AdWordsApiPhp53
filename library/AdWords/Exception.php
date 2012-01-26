@@ -29,23 +29,10 @@
 namespace AdWords;
 
 /**
- * Exception class for any client library validation error.
+ * Exception class for any client library error.
  *
  * @package AdWords
  */
-class ValidationException extends Exception
+class Exception extends \Exception
 {
-    /**
-     * Constructor for ValidationException where the exception will appear
-     * as "Validation failed for [$trigger] with value [$value]: $message".
-     *
-     * @param string $trigger the trigger for the validation error
-     * @param string $value   the value for the trigger
-     * @param string $message the message representing the error in validation
-     */
-    public function __construct($trigger, $value, $message)
-    {
-        $exceptionMessage = sprintf("Validation failed for [%s]  with value [%s]: %s", $trigger, $value, $message);
-        parent::__construct($exceptionMessage);
-    }
 }

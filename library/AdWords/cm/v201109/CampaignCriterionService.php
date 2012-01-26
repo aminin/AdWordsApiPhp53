@@ -129,12 +129,13 @@ class CampaignCriterionService extends SoapClient
      *
      * @param string        $wsdl    WSDL location for this service
      * @param array         $options Options for the SoapClient
-     * @param \AdWords\User $user
      */
-    public function __construct($wsdl, $options, \AdWords\User $user)
+    public function __construct($wsdl, $options)
     {
-        $options["classmap"] = CampaignCriterionService::$classmap;
-        parent::__construct($wsdl, $options, $user, 'CampaignCriterionService', 'https://adwords.google.com/api/adwords/cm/v201109');
+        $options["classmap"]         = self::$classmap;
+        $options["serviceName"]      = 'CampaignCriterionService';
+        $options["serviceNamespace"] = 'https://adwords.google.com/api/adwords/cm/v201109';
+        parent::__construct($wsdl, $options);
     }
 
     /**

@@ -58,12 +58,13 @@ class ServicedAccountService extends SoapClient
      *
      * @param string        $wsdl    WSDL location for this service
      * @param array         $options Options for the SoapClient
-     * @param \AdWords\User $user
      */
-    public function __construct($wsdl, $options, \AdWords\User $user)
+    public function __construct($wsdl, $options)
     {
-        $options["classmap"] = ServicedAccountService::$classmap;
-        parent::__construct($wsdl, $options, $user, 'ServicedAccountService', 'https://adwords.google.com/api/adwords/mcm/v201109');
+        $options["classmap"]         = self::$classmap;
+        $options["serviceName"]      = 'ServicedAccountService';
+        $options["serviceNamespace"] = 'https://adwords.google.com/api/adwords/mcm/v201109';
+        parent::__construct($wsdl, $options);
     }
 
     /**

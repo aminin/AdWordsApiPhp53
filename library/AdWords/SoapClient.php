@@ -42,13 +42,6 @@ class SoapClient extends \SoapClient
     protected $options;
 
     /**
-     * The {@link User} which generated this client.
-     *
-     * @var User the user that generated this client
-     */
-    protected $user;
-
-    /**
      * The header values.
      *
      * @var array the header values
@@ -70,44 +63,6 @@ class SoapClient extends \SoapClient
     protected $serviceNamespace;
 
     /**
-     * The last SOAP XML request made to the server after removeSensitiveInfo() have been called on it.
-     *
-     * @var string the last SOAP XML request made to the server
-     * @see removeSensitiveInfo()
-     */
-    protected $lastRequest;
-
-    /**
-     * The last SOAP XML DOMDocument request made to the server after removeSensitiveInfo() have been called on it.
-     *
-     * @var \DOMDocument the last SOAP XML request made to the server.
-     * Can be null if the last request was not proper XML
-     * @see removeSensitiveInfo()
-     */
-    private $lastRequestDom;
-
-    /**
-     * The last SOAP XML response from the server.
-     *
-     * @var string the last SOAP XML response from the server
-     */
-    protected $lastResponse;
-
-    /**
-     * The last SOAP XML DOMDocument response from the server.
-     *
-     * @var \DOMDocument the last SOAP XML response from the server. Can be null if the last request was not proper XML
-     */
-    private $lastResponseDom;
-
-    /**
-     * The last SOAP fault generated from the server. null if none.
-     *
-     * @var \SOAPFault the last SOAP fault generated from the server
-     */
-    protected $lastSoapFault;
-
-    /**
      * The name of the last method called from this client.
      *
      * @var string the name of the last method called from this client
@@ -121,27 +76,21 @@ class SoapClient extends \SoapClient
      */
     protected $lastArguments;
 
-    /**
-     * The last headers used in the request.
-     *
-     * @var array the last headers used in the request
-     */
-    protected $lastHeaders;
+    protected $requestObserver;
+    protected $responseObserver;
 
     /**
      * Constructor for the AdWords API SOAP client.
      *
      * @param string $wsdl             URI of the WSDL file or <var>null</var> if working in non-WSDL mode
      * @param array  $options          the SOAP client options
-     * @param User   $user             the user which is responsible for this client
-     * @param string $serviceName      the name of the service which is making this call
-     * @param string $serviceNamespace the namespace uri of the service
      */
-    public function __construct($wsdl, array $options, User $user, $serviceName, $serviceNamespace)
+    public function __construct($wsdl, array $options)
     {
-        $this->user             = $user;
-        $this->serviceName      = $serviceName;
-        $this->serviceNamespace = $serviceNamespace;
+        $this->serviceName      = isset($options['serviceName']) ? $options['serviceName'] : null;
+        $this->serviceNamespace = isset($options['serviceNamespace']) ? $options['serviceNamespace'] : null;
+        $this->requestObserver  = isset($options['requestObserver']) ? $options['requestObserver'] : null;
+        $this->responseObserver = isset($options['responseObserver']) ? $options['responseObserver'] : null;
         $options['typemap']     = $this->getTypeMaps();
         $this->options          = $options;
         parent::__construct($wsdl, $options);
@@ -159,10 +108,8 @@ class SoapClient extends \SoapClient
      */
     public function __doRequest($request, $location, $action, $version, $one_way = 0)
     {
-        // Make php to copy (on write) the request VALUE, instead of its REFERENCE
-        // To prevent further segmentation fault
-        $this->lastRequest = $request . '';
-        return parent::__doRequest($request, $location, $action, $version);
+        $this->notifyRequestObserver($request, $location, $action);
+        return parent::__doRequest($request, $location, $action, $version, $one_way);
     }
 
     /**
@@ -176,142 +123,25 @@ class SoapClient extends \SoapClient
      * @return mixed the return from the parent __soapCall
      * @throws \SOAPFault if there was an exception making the request
      */
-    public function __soapCall($functionName, $arguments, $options = array(), $inputHeaders = array(), &$outputHeaders = null)
+    public function __soapCall(
+        $functionName, $arguments, $options = array(), $inputHeaders = array(), &$outputHeaders = null
+    )
     {
         try {
             $inputHeaders[]      = $this->generateSoapHeader();
-            $this->lastHeaders   = $inputHeaders;
             $this->lastArguments = $arguments;
+            $this->lastMethodName= $functionName;
             $options             = array_merge($this->options, $options);
-            $response            = parent::__soapCall($functionName, $arguments, $options, $inputHeaders, $outputHeaders);
-            $this->processResponse($this->lastRequest, $this->__getLastResponse(), $functionName);
+            $response            = parent::__soapCall(
+                $functionName, $arguments, $options, $inputHeaders, $outputHeaders
+            );
+            $this->notifyResponseObserver();
             return $response;
         } catch (\SoapFault $e) {
-            $this->processResponse($this->lastRequest, $this->__getLastResponse(), $functionName, $e);
+            $this->notifyResponseObserver($e);
             throw $e;
         }
     }
-
-    /**
-     * Gets the effective user the request was made against.
-     *
-     * @return string the effective user the request was made against
-     */
-    public function getEffectiveUser()
-    {
-        return $this->getUser()->getClientId();
-    }
-
-    /**
-     * Gets the last set of operators the last call in the form of "operator1,operator2".
-     *
-     * @return string the last set of operators
-     */
-    public function getLastOperators()
-    {
-        try {
-            $operatorStrings = array();
-            $operatorCounters = array();
-            $operatorElements = $this->getLastRequestDom()->getElementsByTagName('operator');
-
-            foreach ($operatorElements as $operatorElement) {
-                if (array_key_exists($operatorElement->nodeValue, $operatorCounters)) {
-                    $operatorCounters[$operatorElement->nodeValue] += 1;
-                } else {
-                    $operatorCounters[$operatorElement->nodeValue] = 1;
-                }
-            }
-
-            foreach ($operatorCounters as $operator => $numOps) {
-                $operators[] = sprintf('%s: %d', $operator, $numOps);
-            }
-
-            return sprintf('{%s}', implode(', ', $operatorStrings));
-        } catch (\DOMException $e) {
-            // TODO(api.arogal): Log failures to retrieve headers.
-            return 'null';
-        }
-    }
-
-    /**
-     * Gets the last number of operations.
-     *
-     * @return string the last number of operations
-     */
-    public function getLastOperations()
-    {
-        try {
-            $operationsElements =
-                    $this->getLastResponseDom()->getElementsByTagName('operations');
-            foreach ($operationsElements as $operationsElement) {
-                return $operationsElement->nodeValue;
-            }
-        } catch (\DOMException $e) {
-            // TODO(api.arogal): Log failures to retrieve headers.
-            return 'null';
-        }
-    }
-
-    /**
-     * Gets the last number of units.
-     *
-     * @return string the last number of units
-     */
-    public function getLastUnits()
-    {
-        try {
-            $unitsElements = $this->getLastResponseDom()->getElementsByTagName('units');
-            foreach ($unitsElements as $unitsElement) {
-                return $unitsElement->nodeValue;
-            }
-        } catch (\DOMException $e) {
-            // TODO(api.arogal): Log failures to retrieve headers.
-            return 'null';
-        }
-    }
-
-    /**
-     * Generates the request info message
-     *
-     * The request info message contains:
-     * - email
-     * - effectiveUser
-     * - service
-     * - method
-     * - operators
-     * - responseTime
-     * - requestId
-     * - operations
-     * - units
-     * - server
-     * - isFault
-     * - faultMessage
-     * @return string the request info message to log
-     */
-    protected function generateRequestInfoMessage()
-    {
-        $messageFields = array(
-            'email'         => $this->getEmail(),
-            'effectiveUser' => $this->getEffectiveUser(),
-            'service'       => $this->getServiceName(),
-            'method'        => $this->getLastMethodName(),
-            'operators'     => $this->getLastOperators(),
-            'responseTime'  => $this->getLastResponseTime(),
-            'requestId'     => $this->getLastRequestId(),
-            'operations'    => $this->getLastOperations(),
-            'units'         => $this->getLastUnits(),
-            'server'        => $this->getServer(),
-            'isFault'       => $this->isFault() ? 'true' : 'false',
-            'faultMessage'  => $this->getLastFaultMessage()
-        );
-        $message = array();
-        foreach ($messageFields as $k => $v) {
-            $message[] = "$k=$v";
-        }
-
-        return implode(' ', $message);
-    }
-
 
     /**
      * Generates the SOAP header for the client.
@@ -320,7 +150,6 @@ class SoapClient extends \SoapClient
      */
     protected function generateSoapHeader()
     {
-        // TODO refactor
         $headerObject = $this->create('SoapHeader');
         foreach (get_object_vars($headerObject) as $var => $value) {
             $headerObject->$var = $this->getHeaderValue($var);
@@ -341,76 +170,49 @@ class SoapClient extends \SoapClient
     }
 
     /**
-     * Processes the response from the __doRequest call.
+     * Notifies the response observer callback.
      *
-     * @param string $request  the request to the server
-     * @param string $response the response from the server
-     * @param string $method   the method called
      * @param \SoapFault $e the SOAP fault thrown if any
      */
-    private function processResponse($request, $response, $method, \SoapFault $e = null)
+    private function notifyResponseObserver(\SoapFault $e = null)
     {
-        $this->lastSoapFault   = $e;
-        $this->lastRequestDom  = null;
-        $this->lastResponseDom = null;
-        $this->lastRequest     = $this->removeSensitiveInfo($request);
-        $this->lastResponse    = $response;
-        $this->lastMethodName  = $method;
+        $request = $this->removeSensitiveInfo($this->__getLastRequest());
 
-        try {
-            $this->getLastResponseDom();
-        } catch (\DOMException $domException) {
-            trigger_error('Failed to load response into DOM: ' . $domException->getMessage(), E_USER_NOTICE);
-        }
-
-        try {
-            $this->getLastRequestDom();
-        } catch (\DOMException $domException) {
-            trigger_error('Failed to load request into DOM: ' . $domException->getMessage(), E_USER_NOTICE);
-        }
-
-        $this->logSoapXml();
-        $this->logRequestInfo();
-    }
-
-    /**
-     * Logs the SOAP XML to the log
-     *
-     * After both the request and response have been sanitized by removeSensitiveInfo().
-     *
-     * @see removeSensitiveInfo()
-     */
-    private function logSoapXml()
-    {
-        $message = sprintf(
-            "%s\n\n%s\n\n%s\n\n%s\n",
-            trim($this->__getLastRequestHeaders()),
-            self::PrettyPrint($this->lastRequest),
-            trim($this->__getLastResponseHeaders()),
-            self::PrettyPrint($this->lastResponse)
+        $data = array(
+            'requestHeaders'  => trim($this->__getLastRequestHeaders()),
+            'request'         => $request,
+            'responseHeaders' => trim($this->__getLastResponseHeaders()),
+            'response'        => $this->__getLastResponse(),
+            'method'          => $this->lastMethodName,
+            'arguments'       => $this->lastArguments,
+            'fault'           => $e
         );
+
+        if (is_callable($this->responseObserver)) {
+            call_user_func($this->responseObserver, $data);
+        }
     }
 
     /**
-     * Logs the request info to the log
+     * Notifies the request observer callback.
      *
-     * After both the request and response has been sanitized by removeSensitiveInfo().
-     *
-     * @see removeSensitiveInfo()
+     * @param string $request  the request XML
+     * @param string $location the URL to request
+     * @param string $action   the SOAP action
      */
-    private function logRequestInfo()
+    private function notifyRequestObserver($request, $location, $action)
     {
-        $message = $this->generateRequestInfoMessage($this->lastRequest, $this->lastResponse, $this->lastSoapFault);
-    }
-   
-    /**
-     * Gets the user for this client.
-     *
-     * @return User the user for this client.
-     */
-    public function getUser()
-    {
-        return $this->user;
+        $request = $this->removeSensitiveInfo($request);
+
+        $data = array(
+            'request'  => $request,
+            'location' => $location,
+            'action'   => $action,
+        );
+
+        if (is_callable($this->requestObserver)) {
+            call_user_func($this->requestObserver, $data);
+        }
     }
    
     /**
@@ -429,16 +231,6 @@ class SoapClient extends \SoapClient
     }
    
     /**
-     * Gets the email of the user making the request.
-     *
-     * @return string the email of the user making the request
-     */
-    public function getEmail()
-    {
-        return $this->user->getEmail();
-    }
-   
-    /**
      * Gets the service name for this client.
      *
      * @return string the service name for this client
@@ -447,7 +239,7 @@ class SoapClient extends \SoapClient
     {
         return $this->serviceName;
     }
-   
+
     /**
      * Gets the method name for the last method called.
      *
@@ -457,61 +249,15 @@ class SoapClient extends \SoapClient
     {
         return $this->lastMethodName;
     }
-   
+
     /**
-     * Gets the response time for the last call
+     * Gets the arguments for the last method called.
      *
-     * @return double the response time of the last call
+     * @return array the name of last method called
      */
-    public function getLastResponseTime()
+    public function getLastArguments()
     {
-        try {
-            $responseTimeElements = $this->getLastResponseDom()->getElementsByTagName('responseTime');
-            foreach ($responseTimeElements as $responseTimeElement) {
-                return $responseTimeElement->nodeValue;
-            }
-        } catch (\DOMException $e) {
-            trigger_error('Failed to load response into DOM: ' . $e->getMessage(), E_USER_NOTICE);
-            return "null";
-        }
-    }
-   
-    /**
-     * Gets the request ID for the last call
-     *
-     * @return string the request ID of the last call
-     */
-    public function getLastRequestId()
-    {
-        try {
-            $requestIdElements = $this->getLastResponseDom()->getElementsByTagName('requestId');
-            foreach ($requestIdElements as $requestIdElement) {
-                return $requestIdElement->nodeValue;
-            }
-        } catch (\DOMException $e) {
-            trigger_error('Failed to load response into DOM: ' . $e->getMessage(), E_USER_NOTICE);
-            return 'null';
-        }
-    }
-   
-    /**
-     * Returns true if there was a SOAP fault during the last call.
-     *
-     * @return bool true if there was a SOAP fault during the last call
-     */
-    public function isFault()
-    {
-        return isset($this->lastSoapFault);
-    }
-   
-    /**
-     * Returns the SOAP fault message if there was any
-     *
-     * @return string the fault message if there was any
-     */
-    public function getLastFaultMessage()
-    {
-        return $this->isFault() ? $this->lastSoapFault->getMessage() : 'null';
+        return $this->lastArguments;
     }
 
     /**
@@ -549,35 +295,25 @@ class SoapClient extends \SoapClient
     {
         $this->headers[$key] = $value;
     }
-   
+
     /**
-     * Gets the DOMDocument representing the last response from this client.
+     * Sets the request observer.
      *
-     * @return \DOMDocument the DOMDocument representing the last response
-     * @throws \DOMException if the DOMDocument could not be loaded
+     * @param callback $requestObserver
      */
-    public function getLastResponseDom()
+    public function setRequestObserver($requestObserver)
     {
-        if (!isset($this->lastResponseDom)) {
-            $this->lastResponseDom = self::getDomFromXml($this->lastResponse);
-        }
-   
-        return $this->lastResponseDom;
+        $this->requestObserver = $requestObserver;
     }
-   
+
     /**
-     * Get the DOMDocument representing the last request from this client.
+     * Sets the response observer.
      *
-     * @return \DOMDocument the DOMDocument representing the last request
-     * @throws \DOMException if the DOMDocument could not be loaded
+     * @param callback $responseObserver
      */
-    public function getLastRequestDom()
+    public function setResponseObserver($responseObserver)
     {
-        if (!isset($this->lastRequestDom)) {
-            $this->lastRequestDom = self::getDomFromXml($this->lastRequest);
-        }
-   
-        return $this->lastRequestDom;
+        $this->responseObserver = $responseObserver;
     }
    
     /**
@@ -606,7 +342,20 @@ class SoapClient extends \SoapClient
      */
     public static function typeMapLongFromXml($xml)
     {
-        $document = self::getDomFromXml($xml);
+        set_error_handler(
+            function($errno, $errstr) {
+                if ($errno == E_WARNING && substr_count($errstr, 'DOMDocument::loadXML()') > 0) {
+                    throw new \DOMException($errstr);
+                } else {
+                    return false;
+                }
+            }
+        );
+        $document = new \DOMDocument();
+        if (!empty($xml))
+            $document->loadXML($xml, LIBXML_DTDLOAD | LIBXML_DTDATTR | LIBXML_NOENT | LIBXML_XINCLUDE);
+        restore_error_handler();
+
         $tag = $document->documentElement->localName;
         $value = $document->documentElement->nodeValue;
         $isIdField = preg_match('/^id$/i', $tag);
@@ -658,6 +407,7 @@ class SoapClient extends \SoapClient
                     $methodParams = $reflectionClass->getConstructor()->getParameters();
                     $result = array_fill(0, sizeof($params), NULL);
                     foreach ($methodParams as $param) {
+                        /** @var \ReflectionParameter $param */
                         if (isset($map[$param->getName()])) {
                             $result[$param->getPosition()] = $map[$param->getName()];
                         }
@@ -669,61 +419,7 @@ class SoapClient extends \SoapClient
                 return $reflectionClass->newInstance();
             }
         } else {
-            trigger_error('Unknown type: ' . $type, E_USER_ERROR);
-        }
-    }
-
-    /**
-     * Gets the DOMDocument of the <var>$xml</var>.
-     *
-     * @param string $xml the XML to create a DOMDocument from
-     * @return \DOMDocument the DOMDocument of the XML
-     * @throws \DOMException if the DOM could not be loaded
-     */
-    private static function getDomFromXml($xml)
-    {
-        set_error_handler(
-            function($errno, $errstr) {
-                if ($errno == E_WARNING && substr_count($errstr, 'DOMDocument::loadXML()') > 0) {
-                    throw new \DOMException($errstr);
-                } else {
-                    return false;
-                }
-            }
-        );
-        $dom = new \DOMDocument();
-        if (!empty($xml))
-            $dom->loadXML($xml, LIBXML_DTDLOAD | LIBXML_DTDATTR | LIBXML_NOENT | LIBXML_XINCLUDE);
-        restore_error_handler();
-        return $dom;
-    }
-
-    /**
-     * Gets the XML represenation of the document.
-     *
-     * @param \DOMDocument $document the document to convert
-     * @return string the XML represenation of the document
-     */
-    private static function getXmlFromDom(\DOMDocument $document)
-    {
-        return trim($document->saveXml());
-    }
-
-    /**
-     * Returns a pretty printed XML. If the XML cannot be loaded a string stripped of any newlines is returned.
-     *
-     * @param string $xml the XML to pretty print
-     * @return string a pretty printed string
-     */
-    private static function prettyPrint($xml)
-    {
-        try {
-            $dom = self::getDomFromXml($xml);
-            $dom->formatOutput = true;
-            return self::getXmlFromDom($dom);
-        } catch (\DOMException $e) {
-            restore_error_handler();
-            return str_replace(array("\r\n", "\n", "\r"), '', $xml);
+            throw new Exception('Unknown type: ' . $type);
         }
     }
 }
