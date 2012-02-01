@@ -59,38 +59,16 @@ class AdGroup
      * @var \AdWords\cm\v201109\Stats
      */
     public $stats;
-    private $_propertyMap = array (
-    );
 
-    /**
-     * Set property with php-incompatiable name
-     *
-     * @param $var attribute name to set
-     * @param $value Value to set
-     */
-    public function __set($var, $value)
+    public function __construct($id = null, $campaignId = null, $campaignName = null, $name = null, $status = null, $bids = null, $experimentData = null, $stats = null)
     {
-        if (isset($this->_propertyMap[$var])) {
-            $this->{$this->_propertyMap[$var]} = $value;
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__set($var, $value);
-        }
-    }
-
-    /**
-     * Get property with php-incompatiable name
-     *
-     * @param $var attribute name to get.
-     * @return mixed Variable value
-     */
-    public function __get($var)
-    {
-        if (array_key_exists($var, $this->_propertyMap)) {
-            return $this->{$this->_propertyMap[$var]};
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__get($var);
-        } else {
-            return null;
-        }
+        $this->id = $id;
+        $this->campaignId = $campaignId;
+        $this->campaignName = $campaignName;
+        $this->name = $name;
+        $this->status = $status;
+        $this->bids = $bids;
+        $this->experimentData = $experimentData;
+        $this->stats = $stats;
     }
 }

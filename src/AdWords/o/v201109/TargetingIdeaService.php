@@ -224,7 +224,7 @@ class TargetingIdeaService extends SoapClient
      * {@link #getBulkKeywordIdeas(TargetingIdeaSelector)} at the price of reduced flexibility in
      * selector options.
      *
-     * @param TargetingIdeaSelector selector Query describing the types of results to return when
+     * @param TargetingIdeaSelector $selector Query describing the types of results to return when
      *                 finding matches (similar keyword ideas/placement ideas).
      *
      * @return TargetingIdeaPage A {@link TargetingIdeaPage} of results, that is a subset of the
@@ -264,7 +264,7 @@ class TargetingIdeaService extends SoapClient
      * but allows less control over the query. For fine-tuned queries that do not need large numbers
      * of results, prefer {@link #get(TargetingIdeaSelector)}.
      *
-     * @param TargetingIdeaSelector selector Query describing the bulk keyword ideas to return.
+     * @param TargetingIdeaSelector $selector Query describing the bulk keyword ideas to return.
      *
      * @return A {@link TargetingIdeaPage} of results, that is a subset of the
      * list of possible ideas meeting the criteria of the

@@ -19,37 +19,39 @@ class AdUnionId
      * @var string
      */
     public $AdUnionIdType;
-    private $_propertyMap = array (
+    private $_propertyMap = array(
         "AdUnionId.Type" => "AdUnionIdType",
     );
 
+    public function __construct($id = null, $AdUnionIdType = null)
+    {
+        $this->id = $id;
+        $this->AdUnionIdType = $AdUnionIdType;
+    }
+
     /**
-     * Set property with php-incompatiable name
+     * Set property with php-incompatible name
      *
-     * @param $var attribute name to set
-     * @param $value Value to set
+     * @param string $var   attribute name to set
+     * @param mixed  $value Value to set
      */
     public function __set($var, $value)
     {
         if (isset($this->_propertyMap[$var])) {
             $this->{$this->_propertyMap[$var]} = $value;
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__set($var, $value);
         }
     }
 
     /**
-     * Get property with php-incompatiable name
+     * Get property with php-incompatible name
      *
-     * @param $var attribute name to get.
+     * @param string $var attribute name to get.
      * @return mixed Variable value
      */
     public function __get($var)
     {
         if (array_key_exists($var, $this->_propertyMap)) {
             return $this->{$this->_propertyMap[$var]};
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__get($var);
         } else {
             return null;
         }

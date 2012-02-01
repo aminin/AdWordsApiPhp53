@@ -13,7 +13,7 @@ class ServicedAccountSelector
     public $customerIds;
     /**
      * Whether to treat the results as a flat list instead of a graph of links.
-     *                 If false, paging options will be ignored.
+     * If false, paging options will be ignored.
      * @var string
      */
     public $enablePaging;
@@ -22,38 +22,11 @@ class ServicedAccountSelector
      * @var string
      */
     public $submanagersOnly;
-    private $_propertyMap = array (
-    );
 
-    /**
-     * Set property with php-incompatiable name
-     *
-     * @param $var attribute name to set
-     * @param $value Value to set
-     */
-    public function __set($var, $value)
+    public function __construct($customerIds = null, $enablePaging = null, $submanagersOnly = null)
     {
-        if (isset($this->_propertyMap[$var])) {
-            $this->{$this->_propertyMap[$var]} = $value;
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__set($var, $value);
-        }
-    }
-
-    /**
-     * Get property with php-incompatiable name
-     *
-     * @param $var attribute name to get.
-     * @return mixed Variable value
-     */
-    public function __get($var)
-    {
-        if (array_key_exists($var, $this->_propertyMap)) {
-            return $this->{$this->_propertyMap[$var]};
-        } else if (get_parent_class(__CLASS__)) {
-            parent::__get($var);
-        } else {
-            return null;
-        }
+        $this->customerIds = $customerIds;
+        $this->enablePaging = $enablePaging;
+        $this->submanagersOnly = $submanagersOnly;
     }
 }
