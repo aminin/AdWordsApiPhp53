@@ -105,7 +105,7 @@ class CampaignTargetService extends SoapClient
     /**
      * Returns the targets for each of the campaigns identified in the campaign target selector.
      *
-     * @param Selector selector a list of campaigns' ids and optional filter of target types.
+     * @param CampaignTargetSelector $selector a list of campaigns' ids and optional filter of target types.
      *
      * @return CampaignTargetPage page of lists of the requested campaign targets.
      * @throws ApiException if problems occurred while fetching campaign targeting information.
@@ -141,13 +141,13 @@ class CampaignTargetService extends SoapClient
 class CampaignTargetServiceGet
 {
     /**
-     * @var Selector
+     * @var CampaignTargetSelector
      */
-    public $serviceSelector;
+    public $selector;
 
     public function __construct($serviceSelector = null)
     {
-        $this->serviceSelector = $serviceSelector;
+        $this->selector = $serviceSelector;
     }
 }
 
