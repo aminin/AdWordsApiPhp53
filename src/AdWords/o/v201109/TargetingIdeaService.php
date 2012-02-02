@@ -203,7 +203,7 @@ class TargetingIdeaService extends SoapClient
     public function __construct($wsdl, $options)
     {
         $options["classmap"]         = self::$classmap;
-        $options["serviceName"]      = 'AdGroupService';
+        $options["serviceName"]      = 'TargetingIdeaService';
         $options["serviceNamespace"] = 'https://adwords.google.com/api/adwords/o/v201109';
         parent::__construct($wsdl, $options);
     }
