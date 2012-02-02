@@ -100,7 +100,7 @@ class SoapClientFactory
      * Generates a user level error if this installation of PHP does not have the extension for SOAP installed.
      *
      * @param string $serviceName the name of the service to generate a client for
-     * @return AdWords\Service an instantiated SOAP client
+     * @return \AdWords\SoapClient an instantiated SOAP client
      */
     public function generateSoapClient($serviceName)
     {
