@@ -34,7 +34,7 @@ if (__FILE__ != realpath($_SERVER['PHP_SELF'])) {
 }
 
 // Register autoloader for the library.
-require_once __DIR__ . '/../../../library/AdWords/Autoloader.php';
+require_once __DIR__ . '/../../../src/AdWords/Autoloader.php';
 \AdWords\Autoloader::register();
 
 // Constants used in the example.
@@ -56,17 +56,13 @@ function GetCampaignsExample(\AdWords\User $user)
     // $campaignService->setRequestObserver('print_r');
 
     // Create selector.
-    $selector             = new \AdWords\cm\v201109\Selector;
-    $selector->fields     = array('Id', 'Name');
-    $orderBy              = new \AdWords\cm\v201109\OrderBy;
-    $orderBy->field       = 'Name';
-    $orderBy->sortOrder   = 'ASCENDING';
-    $selector->ordering[] = $orderBy;
-
-    // Create paging controls.
-    $selector->paging                = new \AdWords\cm\v201109\Paging;
-    $selector->paging->startIndex    = 0;
-    $selector->paging->numberResults = PAGE_SIZE;
+    $selector = new \AdWords\cm\v201109\Selector(
+		array('Id', 'Name'),
+		null,
+		null,
+		new \AdWords\cm\v201109\OrderBy('Name', 'ASCENDING'),
+		new \AdWords\cm\v201109\Paging(0, PAGE_SIZE)
+	);
 
     do {
         // Make the get request.

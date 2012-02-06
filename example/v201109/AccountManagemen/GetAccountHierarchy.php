@@ -38,7 +38,7 @@ if (__FILE__ != realpath($_SERVER['PHP_SELF'])) {
 }
 
 // Register autoloader for the library.
-require_once __DIR__ . '/../../../library/AdWords/Autoloader.php';
+require_once __DIR__ . '/../../../src/AdWords/Autoloader.php';
 \AdWords\Autoloader::register();
 
 /**
