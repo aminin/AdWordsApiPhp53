@@ -185,7 +185,7 @@ class CampaignService extends SoapClient
      * REMOVE operator. To delete a campaign, set its
      * {@link Campaign#status status} to DELETED.
      *
-     * @param CampaignOperation $operations A list of unique operations. The same campaign cannot be specified in more
+     * @param CampaignOperation[] $operations A list of unique operations. The same campaign cannot be specified in more
      * than one operation.
      *
      * @return CampaignReturnValue The list of updated campaigns, returned in the same order as the
