@@ -30,7 +30,7 @@ class Location extends Criterion
      */
     public $isObsolete;
     /**
-     * Ordered list of parents of the location criterion. *
+     * Ordered list of parents of the location criterion.
      * This field can be selected using the value &quot;ParentLocations&quot;.
      * This field is read only and should not be set.  If this field is sent to the API, it will be ignored.
      * @var \AdWords\cm\v201109\Location

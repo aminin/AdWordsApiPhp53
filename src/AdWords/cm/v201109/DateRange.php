@@ -8,12 +8,12 @@ class DateRange
 {
     /**
      * the lower bound of this date range, inclusive.
-     * @var string
+     * @var \AdWords\cm\v201109\Date
      */
     public $min;
     /**
      * the upper bound of this date range, inclusive.
-     * @var string
+     * @var \AdWords\cm\v201109\Date
      */
     public $max;
 
